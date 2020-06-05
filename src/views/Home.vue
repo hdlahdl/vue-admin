@@ -13,6 +13,7 @@
 </el-col>
 </el-row>
   <AddUser :dialogAdd="dialogAdd" @datas="change($event)"></AddUser>
+  <EditUser :dialogEdit="dialogEdit" :form='form1' @datas="change2($event)"></EditUser>
   <el-table
     :data="searchUserinfo (keyUser)"
     highlight-current-row
@@ -56,7 +57,7 @@
       width="240">
       <template slot-scope="scope">
         <el-button @click="handleClick(scope.row)" size="small" type="success" >查看</el-button>
-        <el-button size="small" type="primary">编辑</el-button>
+        <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
         <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
       </template>
     </el-table-column>
@@ -66,9 +67,11 @@
 
 <script>
 import AddUser from '@/components/add.vue'
+import EditUser from '@/components/edit.vue'
 export default {
   components: {
-    AddUser
+    AddUser,
+    EditUser
   },
   methods: {
     handleClick (row) {
@@ -81,6 +84,11 @@ export default {
       console.log('11111')
       console.log(data)
       this.tableData.push(data)
+    },
+    change2 (data) {
+      console.log('22222')
+      console.log(data)
+      this.tableData.splice(this.index, 1, data)
     },
     handleDelete (index, row) {
       this.tableData.splice(index, 1)
@@ -95,6 +103,19 @@ export default {
           return user
         }
       })
+    },
+    handleEdit (index, row) {
+      this.dialogEdit.show = true
+      this.index = index
+      this.form1 = {
+        date: row.date,
+        name: row.name,
+        email: row.email,
+        title: row.title,
+        evaluate: row.evaluate,
+        state: row.state
+        // id: row.id
+      }
     }
   },
   data () {
@@ -103,6 +124,18 @@ export default {
       keyUser: '',
       dialogAdd: {
         show: false
+      },
+      dialogEdit: {
+        show: false
+      },
+      index: '',
+      form1: {
+        date: '',
+        name: '',
+        email: '',
+        title: '',
+        evaluate: '',
+        state: ''
       },
       tableData: [{
         date: '2016-05-02',
